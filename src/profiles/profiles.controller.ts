@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -26,7 +27,11 @@ export class ProfilesController {
   // GET /profiles/:id
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.profileService.findOne(id);
+    try {
+      return this.profileService.findOne(id);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
   // POST /profiles
@@ -38,13 +43,21 @@ export class ProfilesController {
   // PUT /profiles/:id
   @Put(':id')
   update(@Param('id') id: string, @Body() updateProfileDTO: UpdateProfileDTO) {
-    return this.profileService.update(id, updateProfileDTO);
+    try {
+      return this.profileService.update(id, updateProfileDTO);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
   // DELETE /profiles/:id
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.profileService.remove(id);
+    try {
+      return this.profileService.remove(id);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 }

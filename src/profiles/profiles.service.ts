@@ -27,7 +27,13 @@ export class ProfilesService {
   }
 
   findOne(id: string) {
-    return this.profiles.find((profile) => profile.id === id);
+    const matchingProfile = this.profiles.find((profile) => profile.id === id);
+
+    if (!matchingProfile) {
+      throw new Error(`Profile with ID ${id} not found`);
+    }
+
+    return matchingProfile;
   }
 
   create(createProfileDTO: CreateProfileDTO) {
@@ -45,7 +51,7 @@ export class ProfilesService {
     );
 
     if (!matchingProfile) {
-      return {};
+      throw new Error(`Profile with ID ${id} not found`);
     }
 
     matchingProfile.name = updateProfileDTO.name;
@@ -59,8 +65,10 @@ export class ProfilesService {
       (profile) => profile.id === id,
     );
 
-    if (matchingProfileIndex > -1) {
-      this.profiles.splice(matchingProfileIndex, 1);
+    if (matchingProfileIndex === -1) {
+      throw new Error(`Profile with ID ${id} not found`);
     }
+
+    this.profiles.splice(matchingProfileIndex, 1);
   }
 }
