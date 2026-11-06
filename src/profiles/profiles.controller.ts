@@ -10,10 +10,13 @@ import {
   Post,
   Put,
   ParseUUIDPipe,
+  ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateProfileDTO } from './dto/create-profile.dto';
 import { UpdateProfileDTO } from './dto/update-profile.dto';
 import { ProfilesService } from './profiles.service';
+import { ProfilesGuard } from './profiles.guard';
 import type { UUID } from 'crypto';
 
 @Controller('profiles')
@@ -38,7 +41,7 @@ export class ProfilesController {
 
   // POST /profiles
   @Post()
-  create(@Body() createProfileDTO: CreateProfileDTO) {
+  create(@Body(new ValidationPipe()) createProfileDTO: CreateProfileDTO) {
     return this.profileService.create(createProfileDTO);
   }
 
@@ -46,7 +49,7 @@ export class ProfilesController {
   @Put(':id')
   update(
     @Param('id', ParseUUIDPipe) id: UUID,
-    @Body() updateProfileDTO: UpdateProfileDTO,
+    @Body(new ValidationPipe()) updateProfileDTO: UpdateProfileDTO,
   ) {
     try {
       return this.profileService.update(id, updateProfileDTO);
@@ -57,6 +60,7 @@ export class ProfilesController {
 
   // DELETE /profiles/:id
   @Delete(':id')
+  @UseGuards(ProfilesGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseUUIDPipe) id: UUID) {
     try {
