@@ -6,7 +6,7 @@ import type { UpdateProfileDTO } from './dto/update-profile.dto';
 export class ProfilesService {
   private profiles = [
     {
-      id: '1',
+      id: randomUUID(),
       name: 'Brianna Watts',
       description: '1',
     },

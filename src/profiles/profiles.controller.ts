@@ -9,10 +9,12 @@ import {
   Param,
   Post,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateProfileDTO } from './dto/create-profile.dto';
 import { UpdateProfileDTO } from './dto/update-profile.dto';
 import { ProfilesService } from './profiles.service';
+import type { UUID } from 'crypto';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -26,7 +28,7 @@ export class ProfilesController {
 
   // GET /profiles/:id
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: UUID) {
     try {
       return this.profileService.findOne(id);
     } catch (error) {
@@ -42,7 +44,10 @@ export class ProfilesController {
 
   // PUT /profiles/:id
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateProfileDTO: UpdateProfileDTO) {
+  update(
+    @Param('id', ParseUUIDPipe) id: UUID,
+    @Body() updateProfileDTO: UpdateProfileDTO,
+  ) {
     try {
       return this.profileService.update(id, updateProfileDTO);
     } catch (error) {
@@ -53,7 +58,7 @@ export class ProfilesController {
   // DELETE /profiles/:id
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: UUID) {
     try {
       return this.profileService.remove(id);
     } catch (error) {
